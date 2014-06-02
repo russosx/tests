@@ -72,45 +72,48 @@
 	    data.addColumn('number', 'values');
 	    data.addColumn({id:'i0', type:'number', role:'interval'});
 	    data.addColumn({id:'i0', type:'number', role:'interval'});
-	    // data.addColumn({id:'i1', type:'number', role:'interval'});
-	    // data.addColumn({id:'i2', type:'number', role:'interval'});
-	    // data.addColumn({id:'i2', type:'number', role:'interval'});
-	    // data.addColumn({id:'i2', type:'number', role:'interval'});
-	    // data.addColumn({id:'i2', type:'number', role:'interval'});
 
 	    data.addRows(magicNumbers(999)["chart"]);
-		// data.addRows([
-		//         ['a', 100, 90, 110],
-		//         ['b', 120, 95, 130],
-		//         ['c', 130, 105, 140],
-		//         ['d', 90, 85, 95],
-		//         ['e', 70, 74, 63],
-		//         ['f', 30, 39, 22],
-		//         ['g', 80, 77, 83],
-		//         ['h', 100, 90, 110]
-		// ]);
 
-	    var options_lines = {
-	        title: 'Line intervals, default',
-	        curveType:'function',
-	        lineWidth: 2,
-	        intervals: { 'style':'line' }, // Use line intervals.
-	        legend: 'none'
-	    };
+	    // var options_lines = {
+	    //     title: 'Line intervals, default',
+	    //     curveType:'function',
+	    //     lineWidth: 2,
+	    //     intervals: { 'style':'line' }, // Use line intervals.
+	    //     legend: 'none'
+	    // };
 
-	    var options_bars = {
-	        title: 'Bars, default',
-	        curveType: 'function',
-	        series: [{'color': '#D9544C'}],
-	        intervals: { style: 'bars' },
-	        legend: 'none'
-    	};
+	    // var options_bars = {
+	    //     title: 'Bars, default',
+	    //     curveType: 'function',
+	    //     series: [{'color': '#D9544C'}],
+	    //     intervals: { style: 'bars' },
+	    //     legend: 'none'
+    	// };
 
-    	var options_box = {
-	        series: [{'color': '#1A8763'}],
-	        intervals: { style: 'boxes' },
-	        legend: 'none'
-    	};
+    	// var options_box = {
+	    //     series: [{'color': '#1A8763'}],
+	    //     intervals: { style: 'boxes' },
+	    //     legend: 'none'
+    	// };
+
+
+	    // var options_points = {
+	    //     title:'Points, default',
+	    //     curveType:'function',
+	    //     lineWidth: 4,
+	    //     series: [{'color': '#D3362D'}],
+	    //     intervals: { 'style':'points', pointSize: 2 },
+	    //     legend: 'none'
+    	// };
+
+    	// var options_area = {
+	    //     title:'Area, default',
+	    //     curveType:'function',
+	    //     series: [{'color': '#F1CA3A'}],
+	    //     intervals: { 'style':'area' },
+	    //     legend: 'none'
+	    // };
 
     	var options_sticks = {
 	        title:'Sticks, default',
@@ -119,24 +122,6 @@
 	        intervals: { style: 'sticks' },
 	        legend: 'none'
 	    };
-
-	    var options_points = {
-	        title:'Points, default',
-	        curveType:'function',
-	        lineWidth: 4,
-	        series: [{'color': '#D3362D'}],
-	        intervals: { 'style':'points', pointSize: 2 },
-	        legend: 'none'
-    	};
-
-    	var options_area = {
-	        title:'Area, default',
-	        curveType:'function',
-	        series: [{'color': '#F1CA3A'}],
-	        intervals: { 'style':'area' },
-	        legend: 'none'
-	    };
-
 	    var chart_lines = new google.visualization.LineChart($$('js_task3'));
 	    chart_lines.draw(data, options_sticks);
 	}

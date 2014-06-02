@@ -1,3 +1,3 @@
 <?php
 
-echo "Hello, Consulting!";
+echo "Hello, CloudConsulting!";

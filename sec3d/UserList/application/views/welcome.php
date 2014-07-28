@@ -38,7 +38,14 @@
     </div>
 </div>
 
-<div class="container" ng-controller="mainController" ng-init="init()">
+<!-- Container -->
+<div ng-controller="userController" ng-init="init()" class="container">
+
+<!--    <div class="progress">-->
+<!--        <div class="progress-bar progress-bar-striped active"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">-->
+<!--            <span class="sr-only">45% Complete</span>-->
+<!--        </div>-->
+<!--    </div>-->
 
     <table id="user-list" class="table table-hover">
         <thead>
@@ -60,7 +67,7 @@
                 <td>{{ user.address }}</td>
                 <td>
                     <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-sm">
+                        <button ng-click="user.edit()" type="button" class="btn btn-default btn-sm">
                             <span class="glyphicon glyphicon-edit"></span>
                         </button>
                         <button type="button" class="btn btn-default btn-sm">
@@ -72,19 +79,21 @@
         </tbody>
     </table>
 
+    <edit-user></edit-user>
+
 </div> <!-- /container -->
 
 
-    <!-- LIBS -->
-    <script src="vendor/jquery-2.1.1.min.js"></script>
-    <script src="vendor/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
-    <script src="vendor/jquery-validation-1.13.0/dist/jquery.validate.min.js"></script>
-    <script src="vendor/jquery-validation-1.13.0/dist/additional-methods.min.js"></script>
-    <script src="vendor/angular-1.2.21.min.js"></script>
+<!-- LIBS -->
+<script src="vendor/jquery-2.1.1.min.js"></script>
+<script src="vendor/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
 
-    <!-- Application -->
-    <script src="js/app.js"></script>
-    <script src="js/controllers/mainController.js"></script>
+<script src="vendor/angular-1.2.21/angular.min.js"></script>
+<script src="vendor/angular-1.2.21/angular-resource.min.js"></script>
+
+<!-- Application -->
+<script src="js/app/app.js"></script>
+<script src="js/app/controllers/userController.js"></script>
 
 </body>
 </html>

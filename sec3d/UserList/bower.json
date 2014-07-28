@@ -1,0 +1,13 @@
+{
+    "name": "UsersApp",
+    "description": "A trial test for Sec3d",
+    "version": "0.0.1",
+    "license": "MIT",
+    "private": true,
+    "dependencies": {
+        "angular": "1.2.x",
+        "bootstrap": "~3.2.x",
+        "angular-resource": "~1.2.x",
+        "jquery": "~2.1.x"
+    }
+}

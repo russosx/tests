@@ -10,7 +10,7 @@
 
     <title>Userlist App (Ruslan Kladko Trial)</title>
 
-    <link href="vendor/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/navbar-fixed-top.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -20,7 +20,7 @@
     <![endif]-->
 </head>
 
-<body ng-app="UserlistApp">
+<body ng-app="UsersApp">
 
 <!-- Fixed navbar -->
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -85,14 +85,15 @@
 
 
 <!-- LIBS -->
-<script src="vendor/jquery-2.1.1.min.js"></script>
-<script src="vendor/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+<script src="vendor/jquery/dist/jquery.min.js"></script>
+<script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
 
-<script src="vendor/angular-1.2.21/angular.min.js"></script>
-<script src="vendor/angular-1.2.21/angular-resource.min.js"></script>
+<script src="vendor/angular/angular.min.js"></script>
+<script src="vendor/angular-resource/angular-resource.min.js"></script>
 
 <!-- Application -->
 <script src="js/app/app.js"></script>
+<script src="js/app/services/userService.js"></script>
 <script src="js/app/controllers/userController.js"></script>
 
 </body>

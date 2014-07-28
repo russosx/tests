@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('UserlistApp',[]);
+var app = angular.module('UsersApp',['ngResource', 'userService']);
 
 app.directive('editUser', function() {
     return {

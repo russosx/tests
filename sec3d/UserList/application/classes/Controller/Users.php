@@ -26,6 +26,8 @@ class Controller_Users extends Controller {
         self::ACTION_RESULT_FAIL        => "fail",
     ];
 
+    const USERS_MODEL_NAME = 'Model_Users';
+
     public function before() {
         $http_method = $this->request->method();
 
@@ -50,6 +52,12 @@ class Controller_Users extends Controller {
         return['result' => $code, "message" => $this->_response_result[$code]];
     }
 
+    protected function db_action_response($method_name, array $args) {
+        $static_method_to_call = [self::USERS_MODEL_NAME, $method_name];
+        $result_code = forward_static_call_array($static_method_to_call, $args);
+        $this->json_response($this->response_result($result_code));
+    }
+
     /*
      * REST GET method
      */
@@ -61,21 +69,21 @@ class Controller_Users extends Controller {
      * REST POST method
      */
     public function action_create() {
-        $this->json_response($this->response_result(self::ACTION_RESULT_OK));
+        $this->db_action_response('create', [$this->get_request_json()]);
     }
 
     /*
      * REST PUT method
      */
     public function action_update() {
-        $this->json_response($this->request->param());
+        $this->db_action_response('update', [$this->get_request_json()]);
     }
 
     /*
      * REST DELETE method
      */
     public function action_delete() {
-        $this->json_response($this->request->param());
+        $this->db_action_response('delete', [$this->request->param('id')]);
     }
 
     /*
@@ -85,6 +93,11 @@ class Controller_Users extends Controller {
     {
         $this->request->status = 405;
         $this->request->headers['Allow'] = implode(', ', array_keys($this->_action_map));
+    }
+
+    protected function get_request_json()
+    {
+        return json_decode($this->request->body(), true);
     }
 
 }

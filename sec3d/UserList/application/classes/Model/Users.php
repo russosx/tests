@@ -23,4 +23,16 @@ class Model_Users extends Model {
         ];
         return $test_users;
     }
+
+    public static function create(array $user_data) {
+        return Controller_Users::ACTION_RESULT_OK;
+    }
+
+    public static function update(array $user_data) {
+        return Controller_Users::ACTION_RESULT_FAIL;
+    }
+
+    public static function delete($user_id) {
+        return Controller_Users::ACTION_RESULT_OK;
+    }
 } 

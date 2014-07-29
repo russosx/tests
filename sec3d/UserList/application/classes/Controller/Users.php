@@ -47,43 +47,44 @@ class Controller_Users extends Controller {
         $this->response->body(json_encode($json_data));
     }
 
-    protected function response_result($code) {
+    protected function action_result_response($code) {
         $code = array_key_exists($code, $this->_response_result) ? $code : self::ACTION_RESULT_UNDEFINED;
         return['result' => $code, "message" => $this->_response_result[$code]];
     }
 
-    protected function db_action_response($method_name, array $args) {
+    protected function db_action_result(array $args = [], $method_name = null) {
+        $method_name = isset($method_name) ? $method_name : $this->request->action();
         $static_method_to_call = [self::USERS_MODEL_NAME, $method_name];
-        $result_code = forward_static_call_array($static_method_to_call, $args);
-        $this->json_response($this->response_result($result_code));
+        $result = forward_static_call_array($static_method_to_call, $args);
+        return $result;
     }
 
     /*
      * REST GET method
      */
     public function action_index() {
-        $this->json_response(Model_Users::getTestUsers());
+        $this->json_response($this->db_action_result());
     }
 
     /*
      * REST POST method
      */
     public function action_create() {
-        $this->db_action_response('create', [$this->get_request_json()]);
+        $this->db_action_result([$this->get_request_json()]);
     }
 
     /*
      * REST PUT method
      */
     public function action_update() {
-        $this->db_action_response('update', [$this->get_request_json()]);
+        $this->db_action_result([$this->get_request_json()]);
     }
 
     /*
      * REST DELETE method
      */
     public function action_delete() {
-        $this->db_action_response('delete', [$this->request->param('id')]);
+        $this->db_action_result([$this->request->param('id')]);
     }
 
     /*

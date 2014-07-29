@@ -7,21 +7,23 @@
  * Time: 06:10
  */
 
-class Model_Users extends Model {
+class Model_Users {
 
-    public static function getTestUsers() {
-        $test_users = [
-            [
-                'guid' => 'guid1', 'name' => 'Петр', 'surname' => 'Чайковский',
-                'code' => '12312378990', 'email' => 'chak@gmail.com', 'address' => 'R.I.P',
-            ],
-            [
-                'guid' => 'guid2', 'name' => 'Васька', 'surname' => 'Пупкин',
-                'code' => '900000000000', 'email' => 'pup@gmail.com',
-                'address' => 'г. Пупкин, Пупкинская обл., Пупкинский р-н, ул. Пупкина, д. 90, кв. 90',
-            ]
-        ];
-        return $test_users;
+    const DB_NAME = 'sec3d';
+
+    protected static function db_query($type, $sql, array $params = []) {
+        $data = [];
+        $query = DB::query($type, $sql);
+        try {
+            $data = $query->execute(self::DB_NAME)->as_array();
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+        }
+        return $data;
+    }
+
+    public static function index() {
+        return self::db_query(Database::SELECT, 'select * from users_view');
     }
 
     public static function create(array $user_data) {

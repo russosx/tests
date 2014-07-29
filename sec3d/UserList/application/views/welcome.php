@@ -53,7 +53,7 @@
                 <th>Имя</th>
                 <th>Фамилия</th>
                 <th>Код</th>
-                <th>email</th>
+                <th>Почта</th>
                 <th>Адрес</th>
                 <th></th>
             </tr>

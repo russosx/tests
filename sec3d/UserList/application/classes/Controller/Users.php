@@ -9,24 +9,14 @@
 
 class Controller_Users extends Controller {
 
+    const USERS_MODEL_NAME          = 'Model_Users';
+
     protected $_action_map = [
         'GET'       => 'index',
         'POST'      => 'create',
         'PUT'       => 'update',
         'DELETE'    => 'delete',
     ];
-
-    const ACTION_RESULT_UNDEFINED   =  0;
-    const ACTION_RESULT_OK          =  1;
-    const ACTION_RESULT_FAIL        = -1;
-
-    protected $_response_result = [
-        self::ACTION_RESULT_UNDEFINED   => "undefined result code",
-        self::ACTION_RESULT_OK          => "ok",
-        self::ACTION_RESULT_FAIL        => "fail",
-    ];
-
-    const USERS_MODEL_NAME = 'Model_Users';
 
     public function before() {
         $http_method = $this->request->method();
@@ -47,11 +37,6 @@ class Controller_Users extends Controller {
         $this->response->body(json_encode($json_data));
     }
 
-    protected function action_result_response($code) {
-        $code = array_key_exists($code, $this->_response_result) ? $code : self::ACTION_RESULT_UNDEFINED;
-        return['result' => $code, "message" => $this->_response_result[$code]];
-    }
-
     protected function db_action_result(array $args = [], $method_name = null) {
         $method_name = isset($method_name) ? $method_name : $this->request->action();
         $static_method_to_call = [self::USERS_MODEL_NAME, $method_name];
@@ -70,21 +55,32 @@ class Controller_Users extends Controller {
      * REST POST method
      */
     public function action_create() {
-        $this->db_action_result([$this->get_request_json()]);
+        $new_user = $this->get_request_json();
+        if (Helper_Validator::valid($new_user)) {
+            $this->json_response($this->db_action_result([$new_user], 'create'));
+        } else {
+            $this->json_response([]);
+        }
     }
 
     /*
      * REST PUT method
      */
     public function action_update() {
-        $this->db_action_result([$this->get_request_json()]);
+        $user_to_update = $this->get_request_json();
+        if (Helper_Validator::valid($user_to_update)) {
+            $this->json_response($this->db_action_result([$user_to_update], 'update'));
+        } else {
+            $this->json_response([]);
+        }
     }
 
     /*
      * REST DELETE method
      */
     public function action_delete() {
-        $this->db_action_result([$this->request->param('id')]);
+        $user_id = $this->request->param('id');
+        $this->json_response($this->db_action_result([$user_id]), 'delete');
     }
 
     /*

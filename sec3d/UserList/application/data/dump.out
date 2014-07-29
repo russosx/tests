@@ -1,0 +1,264 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: create_user(text, text, text, text, text); Type: FUNCTION; Schema: public; Owner: russ
+--
+
+CREATE FUNCTION create_user(i_name text, i_surname text, i_code text, i_email text, i_address text) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+declare 
+    v_result int;
+begin
+  if ( i_email !~* '[a-z0-9]*@[a-z0-9]*.[a-z]{2,4}' ) then
+    return -1; -- validation failed
+  end if;
+  insert into users 
+    (id, name, surname, code, email, address) values
+    (default, i_name, i_surname, i_code, i_email, i_address);
+  v_result := currval('users_id_seq');
+  return v_result;
+end;
+$$;
+
+
+ALTER FUNCTION public.create_user(i_name text, i_surname text, i_code text, i_email text, i_address text) OWNER TO russ;
+
+--
+-- Name: delete_user(integer); Type: FUNCTION; Schema: public; Owner: russ
+--
+
+CREATE FUNCTION delete_user(i_id integer) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+declare
+  v_row_count int;
+begin
+  delete from users where id = i_id;
+  get diagnostics v_row_count = row_count;
+  return v_row_count;
+end
+$$;
+
+
+ALTER FUNCTION public.delete_user(i_id integer) OWNER TO russ;
+
+--
+-- Name: update_user(integer, text, text, text, text, text); Type: FUNCTION; Schema: public; Owner: russ
+--
+
+CREATE FUNCTION update_user(v_id integer, v_name text, v_surname text, v_code text, v_email text, v_address text) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+declare 
+  v_row_count int;     
+begin
+  if ( v_email !~* '[a-z0-9]*@[a-z0-9]*.[a-z]{2,4}' ) then
+    return -1; -- validation failed
+  end if; 
+  update users set 
+    name = v_name,
+    surname = v_surname,
+    code = v_code,
+    email = v_email,
+    address = v_address
+  where
+    id = v_id;
+  get diagnostics v_row_count = row_count;
+  return v_row_count; -- check in backend how many rows affected
+end;
+$$;
+
+
+ALTER FUNCTION public.update_user(v_id integer, v_name text, v_surname text, v_code text, v_email text, v_address text) OWNER TO russ;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: russ; Tablespace: 
+--
+
+CREATE TABLE users (
+    id integer NOT NULL,
+    name character varying(64) NOT NULL,
+    surname character varying(64) NOT NULL,
+    email character varying(128) NOT NULL,
+    address character varying(256),
+    code character varying(32) DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public.users OWNER TO russ;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: russ
+--
+
+CREATE SEQUENCE users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO russ;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: russ
+--
+
+ALTER SEQUENCE users_id_seq OWNED BY users.id;
+
+
+--
+-- Name: users_view; Type: VIEW; Schema: public; Owner: russ
+--
+
+CREATE VIEW users_view AS
+ SELECT users.id,
+    users.name,
+    users.surname,
+    users.email,
+    users.address,
+    users.code
+   FROM users;
+
+
+ALTER TABLE public.users_view OWNER TO russ;
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: russ
+--
+
+ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: russ
+--
+
+COPY users (id, name, surname, email, address, code) FROM stdin;
+1	Russ	Klad	r@klad.com	address	1235678
+2	Руслан	Кладько	pupupkin@mail.ru	ул. Калинина, 1А	2780309173
+8	Руслан	Кладько	pupupkin2@mail.ru	ул. Калинина, 1А	2780309173
+\.
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: russ
+--
+
+SELECT pg_catalog.setval('users_id_seq', 8, true);
+
+
+--
+-- Name: users_email_key; Type: CONSTRAINT; Schema: public; Owner: russ; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_email_key UNIQUE (email);
+
+
+--
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: russ; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- Name: create_user(text, text, text, text, text); Type: ACL; Schema: public; Owner: russ
+--
+
+REVOKE ALL ON FUNCTION create_user(i_name text, i_surname text, i_code text, i_email text, i_address text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION create_user(i_name text, i_surname text, i_code text, i_email text, i_address text) FROM russ;
+GRANT ALL ON FUNCTION create_user(i_name text, i_surname text, i_code text, i_email text, i_address text) TO russ;
+GRANT ALL ON FUNCTION create_user(i_name text, i_surname text, i_code text, i_email text, i_address text) TO PUBLIC;
+GRANT ALL ON FUNCTION create_user(i_name text, i_surname text, i_code text, i_email text, i_address text) TO sec3d;
+
+
+--
+-- Name: delete_user(integer); Type: ACL; Schema: public; Owner: russ
+--
+
+REVOKE ALL ON FUNCTION delete_user(i_id integer) FROM PUBLIC;
+REVOKE ALL ON FUNCTION delete_user(i_id integer) FROM russ;
+GRANT ALL ON FUNCTION delete_user(i_id integer) TO russ;
+GRANT ALL ON FUNCTION delete_user(i_id integer) TO PUBLIC;
+GRANT ALL ON FUNCTION delete_user(i_id integer) TO sec3d;
+
+
+--
+-- Name: update_user(integer, text, text, text, text, text); Type: ACL; Schema: public; Owner: russ
+--
+
+REVOKE ALL ON FUNCTION update_user(v_id integer, v_name text, v_surname text, v_code text, v_email text, v_address text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION update_user(v_id integer, v_name text, v_surname text, v_code text, v_email text, v_address text) FROM russ;
+GRANT ALL ON FUNCTION update_user(v_id integer, v_name text, v_surname text, v_code text, v_email text, v_address text) TO russ;
+GRANT ALL ON FUNCTION update_user(v_id integer, v_name text, v_surname text, v_code text, v_email text, v_address text) TO PUBLIC;
+GRANT ALL ON FUNCTION update_user(v_id integer, v_name text, v_surname text, v_code text, v_email text, v_address text) TO sec3d;
+
+
+--
+-- Name: users; Type: ACL; Schema: public; Owner: russ
+--
+
+REVOKE ALL ON TABLE users FROM PUBLIC;
+REVOKE ALL ON TABLE users FROM russ;
+GRANT ALL ON TABLE users TO russ;
+GRANT INSERT,DELETE,UPDATE ON TABLE users TO sec3d;
+
+
+--
+-- Name: users_view; Type: ACL; Schema: public; Owner: russ
+--
+
+REVOKE ALL ON TABLE users_view FROM PUBLIC;
+REVOKE ALL ON TABLE users_view FROM russ;
+GRANT ALL ON TABLE users_view TO russ;
+GRANT SELECT ON TABLE users_view TO sec3d;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

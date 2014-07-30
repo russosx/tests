@@ -18,9 +18,21 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <style>
+        div.ajaxprogress {
+            margin-top: 10em;
+            min-height: 20em;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
+    </style>
+
 </head>
 
-<body ng-app="UsersApp">
+<body ng-app="UsersApp" ng-controller="userController" ng-init="init()" >
 
 <!-- Fixed navbar -->
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -31,7 +43,7 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 <form class="navbar-form navbar-left">
-                    <button type="submit" class="btn btn-primary">New user</button>
+                    <button ng-click="createUser()" type="submit" class="btn btn-primary">New user</button>
                 </form>
             </ul>
         </div><!--/.nav-collapse -->
@@ -39,13 +51,9 @@
 </div>
 
 <!-- Container -->
-<div ng-controller="userController" ng-init="init()" class="container">
+<div class="container">
 
-<!--    <div class="progress">-->
-<!--        <div class="progress-bar progress-bar-striped active"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">-->
-<!--            <span class="sr-only">45% Complete</span>-->
-<!--        </div>-->
-<!--    </div>-->
+<!--    <div id="progress" class="ajaxprogress"><img src="img/ajax-loader.gif" alt="Loading data..."/></div>-->
 
     <table id="user-list" class="table table-hover">
         <thead>
@@ -67,10 +75,10 @@
                 <td>{{ user.address }}</td>
                 <td>
                     <div class="btn-group">
-                        <button ng-click="user.edit()" type="button" class="btn btn-default btn-sm">
+                        <button ng-click="editUser(user)" type="button" class="btn btn-default btn-sm">
                             <span class="glyphicon glyphicon-edit"></span>
                         </button>
-                        <button type="button" class="btn btn-default btn-sm">
+                        <button ng-click="deleteUser(user)" type="button" class="btn btn-default btn-sm">
                             <span class="glyphicon glyphicon-remove-sign"></span>
                         </button>
                     </div>

@@ -1,53 +1,64 @@
-<div id="idEditUserFormDiv" class="modal fade">
+<style>
+    .help-block {
+        font-size: 12px !important;
+    }
+</style>
+
+<div id="userFormDiv" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">Modal title</h4>
+                <h4 class="modal-title">Пользователь</h4>
             </div>
             <div class="modal-body">
-                <form id="editUserForm" name="editUserForm" class="form-horizontal" role="form">
+                <form id="userForm" name="userForm" class="form-horizontal" role="form" novalidate>
                     <div class="form-group">
-                        <label for="inputName" class="col-sm-2 control-label">Имя</label>
-                        <div class="col-sm-10">
-                            <input ng-model="nowEditingUser.name"
-                                   id="inputName" type="text" class="form-control" required>
+                        <label for="name" class="col-sm-2 control-label">Имя</label>
+                        <div class="col-sm-10" ng-class="{'has-error' : userForm.name.$invalid && !userForm.name.$pristine}">
+                            <input ng-model="currentUser.name"
+                                   id="name" name="name" type="text" class="form-control" required>
+                            <p ng-show="userForm.name.$invalid && !userForm.name.$pristine" class="help-block">Введите имя</p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inputSurename" class="col-sm-2 control-label">Фамилия</label>
-                        <div class="col-sm-10">
-                            <input ng-model="nowEditingUser.surname"
-                                   id="inputSurename" type="text" class="form-control" required>
+                        <label for="surname" class="col-sm-2 control-label">Фамилия</label>
+                        <div class="col-sm-10"  ng-class="{'has-error' : userForm.surname.$invalid && !userForm.surname.$pristine}">
+                            <input ng-model="currentUser.surname"
+                                   id="surname" name="surname" type="text" class="form-control" required>
+                            <p ng-show="userForm.surname.$invalid && !userForm.surname.$pristine" class="help-block">Введите фамилию</p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inputCode" class="col-sm-2 control-label">Код</label>
-                        <div class="col-sm-10">
-                            <input ng-model="nowEditingUser.code"
-                                   id="inputCode" type="text" class="form-control" required>
+                        <label for="code" class="col-sm-2 control-label">Код</label>
+                        <div class="col-sm-10"  ng-class="{'has-error' : userForm.code.$invalid && !userForm.code.$pristine}">
+                            <input ng-model="currentUser.code"
+                                   id="code" name="code" type="text" class="form-control" ng-pattern="/^\d+$/" required>
+                            <p ng-show="userForm.code.$invalid && !userForm.code.$pristine" class="help-block">Введите правильный код</p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inputEmail" class="col-sm-2 control-label">email</label>
-                        <div class="col-sm-10">
-                            <input ng-model="nowEditingUser.email"
-                                   id="inputEmail" type="email" class="form-control" required>
+                        <label for="email" class="col-sm-2 control-label">Почта</label>
+                        <div class="col-sm-10" ng-class="{'has-error' : userForm.email.$invalid && !userForm.email.$pristine}">
+                            <input ng-model="currentUser.email"
+                                   id="email" name="email" type="email" class="form-control" required>
+                            <p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block">Ввведите правильный email</p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inputAddress" class="col-sm-2 control-label">Адрес</label>
-                        <div class="col-sm-10">
-                            <input ng-model="nowEditingUser.address"
-                                   id="inputAddress" type="text" class="form-control" required>
+                        <label for="address" class="col-sm-2 control-label">Адрес</label>
+                        <div class="col-sm-10" ng-class="{'has-error' : userForm.address.$invalid && !userForm.address.$pristine}">
+                            <input ng-model="currentUser.address"
+                                   id="address" name="address" type="text" class="form-control" required>
+                            <p ng-show="userForm.address.$invalid && !userForm.address.$pristine" class="help-block">Введите адрес</p>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button ng-click="nowEditingUser.save()" ng-class="{disabled:!editUserForm.$valid}"
-                        type="button" class="btn btn-primary" >Save changes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                <button ng-disabled="userForm.$invalid" ng-click="saveUser(currentUser)"
+                        type="button" class="btn btn-primary" >Сохранить</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

@@ -7,7 +7,7 @@ return array
         'connection' => array(
 			'dsn'        => 'pgsql:host=localhost;port=5432;dbname=sec3d',
 			'username'   => 'russ',
-			'password'   => 'PH7vaf8q',
+			'password'   => 'russ',
 			'persistent' => TRUE,
 		),
 		'table_prefix' => '',

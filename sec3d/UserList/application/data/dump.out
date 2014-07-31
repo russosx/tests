@@ -56,10 +56,13 @@ ALTER FUNCTION public.create_user(i_name text, i_surname text, i_code text, i_em
 CREATE FUNCTION delete_user(i_id integer) RETURNS integer
     LANGUAGE plpgsql
     AS $$
-declare
+  declare
   v_row_count int;
 begin
-  delete from users where id = i_id;
+  update users set 
+    deleted = true,
+    updated_at = now()
+  where id = i_id;
   get diagnostics v_row_count = row_count;
   return v_row_count;
 end
@@ -75,7 +78,7 @@ ALTER FUNCTION public.delete_user(i_id integer) OWNER TO russ;
 CREATE FUNCTION update_user(v_id integer, v_name text, v_surname text, v_code text, v_email text, v_address text) RETURNS integer
     LANGUAGE plpgsql
     AS $$
-declare 
+  declare 
   v_row_count int;     
 begin
   if ( v_email !~* '[a-z0-9]*@[a-z0-9]*.[a-z]{2,4}' ) then
@@ -86,7 +89,8 @@ begin
     surname = v_surname,
     code = v_code,
     email = v_email,
-    address = v_address
+    address = v_address,
+    updated_at = now()
   where
     id = v_id;
   get diagnostics v_row_count = row_count;
@@ -111,7 +115,10 @@ CREATE TABLE users (
     surname character varying(64) NOT NULL,
     email character varying(128) NOT NULL,
     address character varying(256),
-    code character varying(32) DEFAULT 0 NOT NULL
+    code character varying(32) DEFAULT 0 NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -149,7 +156,8 @@ CREATE VIEW users_view AS
     users.email,
     users.address,
     users.code
-   FROM users;
+   FROM users
+  WHERE (users.deleted = false);
 
 
 ALTER TABLE public.users_view OWNER TO russ;
@@ -165,10 +173,10 @@ ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regcl
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: russ
 --
 
-COPY users (id, name, surname, email, address, code) FROM stdin;
-1	Russ	Klad	r@klad.com	address	1235678
-2	Руслан	Кладько	pupupkin@mail.ru	ул. Калинина, 1А	2780309173
-8	Руслан	Кладько	pupupkin2@mail.ru	ул. Калинина, 1А	2780309173
+COPY users (id, name, surname, email, address, code, created_at, updated_at, deleted) FROM stdin;
+37	Rus	Kla	ru@kla.ru	asdf	321	2014-07-31 08:52:21.782296	2014-07-31 08:53:37.050209	t
+38	ER	Kl	qwe@asdf.ruu	asdfasdf	43124	2014-07-31 08:52:21.782296	2014-07-31 09:41:12.611102	t
+39	ASD	DF	er@asdf.ru	asdfasdf	321	2014-07-31 09:09:10.632591	2014-07-31 09:47:24.642085	t
 \.
 
 
@@ -176,7 +184,7 @@ COPY users (id, name, surname, email, address, code) FROM stdin;
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: russ
 --
 
-SELECT pg_catalog.setval('users_id_seq', 8, true);
+SELECT pg_catalog.setval('users_id_seq', 39, true);
 
 
 --
@@ -193,6 +201,13 @@ ALTER TABLE ONLY users
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_deleted_key; Type: INDEX; Schema: public; Owner: russ; Tablespace: 
+--
+
+CREATE UNIQUE INDEX users_deleted_key ON users USING btree (deleted, id);
 
 
 --

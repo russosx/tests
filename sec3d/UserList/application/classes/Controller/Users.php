@@ -13,8 +13,8 @@ class Controller_Users extends Controller {
 
     protected $_action_map = [
         'GET'       => 'index',
-        'POST'      => 'create',
-        'PUT'       => 'update',
+        'POST'      => 'save',
+        'PUT'       => 'save',
         'DELETE'    => 'delete',
     ];
 
@@ -34,44 +34,42 @@ class Controller_Users extends Controller {
     }
 
     protected function json_response(array $json_data) {
-        $this->response->body(json_encode($json_data));
+        $this->response->body(json_encode($json_data), JSON_FORCE_OBJECT);
     }
 
-    protected function db_action_result(array $args = [], $method_name = null) {
-        $method_name = isset($method_name) ? $method_name : $this->request->action();
-        $static_method_to_call = [self::USERS_MODEL_NAME, $method_name];
-        $result = forward_static_call_array($static_method_to_call, $args);
-        return $result;
+    protected function empty_obj_response() {
+        $this->json_response([]);
     }
 
     /*
      * REST GET method
      */
     public function action_index() {
-        $this->json_response($this->db_action_result());
+        $user_id = $this->request->param('id');
+        $this->json_response(Model_Users::get_users($user_id));
     }
 
     /*
-     * REST POST method
+     * REST POST (new user) and PUT (edit user) methods
      */
-    public function action_create() {
-        $new_user = $this->get_request_json();
-        if (Helper_Validator::valid($new_user)) {
-            $this->json_response($this->db_action_result([$new_user], 'create'));
+    public function action_save() {
+        $user = $this->get_request_json();
+        if (Helper_Validator::valid($user)) {
+            if ($this->is_new_user($user)) {
+                $this->add_user($user, $result_key, $result, $user_id);
+            } else {
+                $this->update_user($user, $result_key, $result, $user_id);
+            }
+            if (array_key_exists($result_key, $result)) {
+                $user = Model_Users::get_users($user_id);
+                $this->json_response($user);
+            } else {
+                $this->json_response($result);
+            }
         } else {
-            $this->json_response([]);
-        }
-    }
-
-    /*
-     * REST PUT method
-     */
-    public function action_update() {
-        $user_to_update = $this->get_request_json();
-        if (Helper_Validator::valid($user_to_update)) {
-            $this->json_response($this->db_action_result([$user_to_update], 'update'));
-        } else {
-            $this->json_response([]);
+            $error = 'User validation failed';
+            error_log($error . ': ' . print_r($user, true));
+            $this->json_response(['error' => $error]);
         }
     }
 
@@ -80,7 +78,11 @@ class Controller_Users extends Controller {
      */
     public function action_delete() {
         $user_id = $this->request->param('id');
-        $this->json_response($this->db_action_result([$user_id]), 'delete');
+        if ( ! empty($user_id)) {
+            $this->json_response(Model_Users::delete_user($user_id));
+        } else {
+            $this->empty_obj_response();
+        }
     }
 
     /*
@@ -95,6 +97,37 @@ class Controller_Users extends Controller {
     protected function get_request_json()
     {
         return json_decode($this->request->body(), true);
+    }
+
+    protected function is_new_user($user)
+    {
+        return ( ! isset($user['id']));
+    }
+
+    /**
+     * @param $user
+     * @param $result_key
+     * @param $result
+     * @param $user_id
+     */
+    protected function update_user($user, &$result_key, &$result, &$user_id)
+    {
+        $result_key = 'update_user';
+        $result = Model_Users::update_user($user);
+        $user_id = $user['id'];
+    }
+
+    /**
+     * @param $user
+     * @param $result_key
+     * @param $result
+     * @param $user_id
+     */
+    protected function add_user($user, &$result_key, &$result, &$user_id)
+    {
+        $result_key = 'create_user';
+        $result = Model_Users::add_user($user);
+        $user_id = $result[$result_key];
     }
 
 }

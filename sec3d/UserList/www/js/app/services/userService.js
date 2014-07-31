@@ -4,10 +4,14 @@
 
 var userService = angular.module('userService', ['ngResource']);
 
-userService.factory('User', ['$resource',
+userService.factory('UsersStore', ['$resource',
     function($resource){
-        return $resource('users/:userid', {}, {
-            query: {method:'GET', params:{userId:'users'}, isArray:true}
+        return $resource('users/:userId', {}, {
+            query:      { method: 'GET', isArray:true },
+            get:        { method: 'GET', params:{userId:'@id'} },
+            add:        { method: 'POST' },
+            save:       { method: 'PUT' },
+            delete:     { method: 'DELETE', params:{userId:'@id'} }
         });
     }
 ]);

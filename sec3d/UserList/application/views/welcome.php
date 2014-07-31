@@ -20,7 +20,7 @@
     <![endif]-->
 
     <style>
-        div.ajaxprogress {
+        #load-progress {
             margin-top: 10em;
             min-height: 20em;
             display: block;
@@ -53,9 +53,9 @@
 <!-- Container -->
 <div class="container">
 
-<!--    <div id="progress" class="ajaxprogress"><img src="img/ajax-loader.gif" alt="Loading data..."/></div>-->
+    <div id="load-progress" class="load-progress"><img src="img/ajax-loader.gif" alt="Loading data..."/></div>
 
-    <table id="user-list" class="table table-hover">
+    <table id="user-list" class="table table-hover" style="display: none">
         <thead>
             <tr>
                 <th>Имя</th>
